@@ -37,6 +37,18 @@ class MiMotion():
             error_traceback = traceback.format_exc()
             print(error_traceback)
 
+    # 推送telegram
+    def push_telegram(self,msg):
+        try:
+            print("\nTelegram 推送开始")
+            send_data = {"chat_id": tg_user_id, "text": title + '\n\n'+content, "disable_web_page_preview": "true"}
+            response = requests.post(
+                url=f'https://api.telegram.org/bot{tg_bot_token}/sendMessage', data=send_data)
+            print(response.json()['ok'])
+        except Exception as e:
+            error_traceback = traceback.format_exc()
+            print(error_traceback)
+
     # 企业微信
     def get_access_token(self):
         try:
@@ -76,9 +88,9 @@ class MiMotion():
 
     def get_time(self):
         try:
-            url = "http://api.m.taobao.com/rest/api3.do?api=mtop.common.getTimestamp"
+            url = "http://mshopact.vivo.com.cn/tool/config"
             response = requests.get(url, headers=self.headers).json()
-            t = response["data"]["t"]
+            t = response["data"]["nowTime"]
             return t
         except Exception as e:
             error_traceback = traceback.format_exc()
@@ -273,7 +285,13 @@ if __name__ == "__main__":
         if datas.get("SCKEY"):
             sckey = datas.get("SCKEY")
             MiMotion(check_item=_check_item).push_wx(msg)
-
+        # 推送telegram
+        if datas.get("TG_BOT_TOKEN") or datas.get("TG_USER_ID") :
+            tg_bot_token = datas.get("TG_BOT_TOKEN")
+            tg_user_id = datas.get("TG_USER_ID")
+            MiMotion(check_item=_check_item).push_telegram(msg)
+        else:
+            print("Telegram推送的tg_bot_token或者tg_user_id未设置!!\n取消推送")
         # 企业微信推送
         # 是否开启企业微信推送false关闭true开启，默认关闭，开启后请填写设置并将上面两个都留空
         if datas.get("POSITION"):
