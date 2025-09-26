@@ -95,7 +95,6 @@ class MiMotion():
             print(e)
             return
     @staticmethod
-
     def login(user, password):
         try:
             url1 = f"https://api-user.huami.com/registrations/{user}/tokens"
@@ -115,9 +114,11 @@ class MiMotion():
             print('登录响应状态码:', r1.status_code)
             print('登录响应头:', dict(r1.headers))
             print('登录响应体:', r1.text[:500])
+
             location = r1.headers.get("Location")
             if not location:
                 print("⚠️ 登录接口未返回 Location，可能是账号密码错误或接口变动")
+
             code_pattern = re.compile("(?<=access=).*?(?=&)")
             code_matches = code_pattern.findall(location)
             if len(code_matches) > 0:
@@ -125,7 +126,8 @@ class MiMotion():
             else:
                 print("Code not found in location")
                 return None, None
-            url2 = "https://account.huami.com/v2/client/login"        
+
+            url2 = "https://account.huami.com/v2/client/login"
             if "+86" in user:
                 data2 = {
                     "app_name": "com.xiaomi.hm.health",
@@ -153,15 +155,18 @@ class MiMotion():
                     "source": "com.xiaomi.hm.health",
                     "third_name": "email",
                 }
+
             r2 = requests.post(url=url2, data=data2, headers=headers).json()
             #print(r2)
             login_token = r2["token_info"]["login_token"]
             userid = r2["token_info"]["user_id"]
             return login_token, userid
+
         except Exception as e:
             error_traceback = traceback.format_exc()
             print(error_traceback)
             return 0, None
+
 
     def main(self):
         try:
