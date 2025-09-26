@@ -116,8 +116,8 @@ class MiMotion():
            print('登录响应头:', dict(r1.headers))
            print('登录响应体:', r1.text[:500])
            location = r1.headers.get("Location")
-if not location:
-    print("⚠️ 登录接口未返回 Location，可能是账号密码错误或接口变动")
+           if not location:
+               print("⚠️ 登录接口未返回 Location，可能是账号密码错误或接口变动")
             code_pattern = re.compile("(?<=access=).*?(?=&)")
             code_matches = code_pattern.findall(location)
             if len(code_matches) > 0:
