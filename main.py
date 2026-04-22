@@ -38,17 +38,34 @@ class MiMotion():
             print(error_traceback)
 
     # 推送telegram
-    def push_telegram(self,msg):
+    def push_telegram(self, msg):
         try:
             print("\nTelegram 推送开始")
-            send_data = {"chat_id": tg_user_id, "text": title + '\n\n'+content, "disable_web_page_preview": "true"}
-            response = requests.post(
-                url=f'https://api.telegram.org/bot{tg_bot_token}/sendMessage', data=send_data)
-            print(response.json()['ok'])
-        except Exception as e:
-            error_traceback = traceback.format_exc()
-            print(error_traceback)
 
+            # 防止未配置
+            if not tg_bot_token or not tg_user_id:
+                print("Telegram 参数未配置")
+                return
+
+            url = f"https://api.telegram.org/bot{tg_bot_token}/sendMessage"
+
+            send_data = {
+                "chat_id": tg_user_id,
+                "text": msg,
+                "disable_web_page_preview": True
+            }
+
+            response = requests.post(url=url, data=send_data, timeout=10)
+
+            result = response.json()
+            print("Telegram返回：", result.get("ok"))
+
+            return result
+
+        except Exception as e:
+            print("Telegram推送失败")
+            print(traceback.format_exc())
+        
     # 企业微信
     def get_access_token(self):
         try:
