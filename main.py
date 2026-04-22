@@ -42,7 +42,6 @@ class MiMotion():
         try:
             print("\nTelegram 推送开始")
 
-            # 防止未配置
             if not tg_bot_token or not tg_user_id:
                 print("Telegram 参数未配置")
                 return
@@ -51,19 +50,17 @@ class MiMotion():
 
             send_data = {
                 "chat_id": tg_user_id,
-                "text": msg,
+                "text": "📱 小米运动步数修改\n\n" + msg,
                 "disable_web_page_preview": True
             }
 
             response = requests.post(url=url, data=send_data, timeout=10)
-
             result = response.json()
-            print("Telegram返回：", result.get("ok"))
 
+            print("Telegram返回：", result.get("ok"))
             return result
 
-        except Exception as e:
-            print("Telegram推送失败")
+        except Exception:
             print(traceback.format_exc())
         
     # 企业微信
